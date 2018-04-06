@@ -10,8 +10,19 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileFilter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ServiceLoader;
+import solutions.botting.golem.plugin.PluginLibrary;
 import solutions.botting.golem.core.RobotHelper;
+import solutions.botting.golem.plugin.DefaultExternalResourceFetcher;
+import solutions.botting.golem.plugin.ExternalResourceFetcher;
+import solutions.botting.golem.plugin.GolemResourceUpdateException;
+import solutions.botting.golem.plugin.PluginResource;
 import solutions.botting.golem.script.ScriptState;
 
 /**
@@ -27,6 +38,7 @@ public class Golem {
     private final Robot robot;
     private Thread currentScriptThread;
     private final ArrayList<GolemListener> listeners;
+    private String pluginDirectory;
 
     public Golem() throws AWTException, InterruptedException {
         this.running = true;
@@ -34,13 +46,15 @@ public class Golem {
         this.robot = new Robot();
         this.botBounds = new Rectangle(toolkit.getScreenSize());
         this.listeners = new ArrayList<>();
+        this.pluginDirectory = DEFAULT_PLUGIN_DIRECTORY;
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.loadLibrary("lib/x64/opencv_java340");        
+        System.loadLibrary("lib/x64/opencv_java340");
+
         try {
             Golem bot = new Golem();
             if (args.length != 0 && args[0] != null) {
@@ -123,4 +137,50 @@ public class Golem {
     public void sleep(long l) throws InterruptedException {
         getCurrentScript().sleep(l);
     }
+
+    public void loadDirectory(String directory) throws MalformedURLException {
+        File loc = new File(directory);
+        File[] flist = loc.listFiles(new FileFilter() {
+
+            public boolean accept(File file) {
+                return file.getPath().toLowerCase().endsWith(".jar");
+            }
+        });
+        URL[] urls = new URL[flist.length];
+        for (int i = 0; i < flist.length; i++) {
+            urls[i] = flist[i].toURI().toURL();
+            System.out.println(urls[i]);
+        }
+        URLClassLoader ucl = new URLClassLoader(urls);
+
+        ServiceLoader<PluginLibrary> sl = ServiceLoader.load(PluginLibrary.class, ucl);
+        Iterator<PluginLibrary> apit = sl.iterator();
+        System.out.println(apit.hasNext());
+        while (apit.hasNext()) {
+            System.out.println(apit.next().getName());
+        }
+
+    }
+
+    public Object loadPlugin(PluginResource pr) throws GolemResourceUpdateException {
+        DefaultExternalResourceFetcher derf = new DefaultExternalResourceFetcher(this.getPluginDirectory());
+        return loadPlugin(pr, derf);
+    }
+
+    public Object loadPlugin(PluginResource pr, ExternalResourceFetcher f) throws GolemResourceUpdateException {
+        return f.loadExternalResource(pr);
+    }
+
+    public void loadClasses(URL[] url) {
+
+    }
+
+    public String getPluginDirectory() {
+        return pluginDirectory;
+    }
+
+    public void setPluginDirectory(String s) {
+        pluginDirectory = s;
+    }
+    public static final String DEFAULT_PLUGIN_DIRECTORY = "plugins";
 }

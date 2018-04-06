@@ -12,6 +12,7 @@ package solutions.botting.golem.core;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
@@ -20,7 +21,8 @@ import java.util.Collections;
 import solutions.botting.golem.Golem;
 
 /**
-This is a modified version of the EventNazi.class from SMART
+ * This is a modified version of the EventNazi.class from SMART
+ *
  * @author Benjamin J. Land, unsignedByte
  */
 public class RobotHelper {
@@ -66,7 +68,7 @@ public class RobotHelper {
         Rectangle bounds = golem.getBotBounds();
         Double bx = bounds.getX();
         Double by = bounds.getY();
-        robot.mouseMove(x+bx.intValue(), y+by.intValue());
+        robot.mouseMove(x + bx.intValue(), y + by.intValue());
         cx = x;
         cy = y;
         return new Point(cx, cy);
@@ -270,56 +272,13 @@ public class RobotHelper {
      * @result The actual end point
      */
     public synchronized Point clickMouse(int x, int y, int button) {
-        if (canClick(button)) {
-            int btnMask = ((leftDown || button == 1) ? MouseEvent.BUTTON1_DOWN_MASK : 0) | ((midDown || button == 2) ? (MouseEvent.BUTTON2_DOWN_MASK | MouseEvent.META_DOWN_MASK) : 0) | ((rightDown || button == 3) ? (MouseEvent.BUTTON3_DOWN_MASK | MouseEvent.META_DOWN_MASK) : 0);
-            int btn = 0;
-            switch (button) {
-                case 1:
-                    btn = MouseEvent.BUTTON1;
-                    break;
-                case 2:
-                    btn = MouseEvent.BUTTON2;
-                    break;
-                case 3:
-                    btn = MouseEvent.BUTTON3;
-                    break;
-            }
-            Point end = moveMouse(x, y);
 
-            robot.mousePress(btnMask);
-            switch (button) {
-                case 1:
-                    leftDown = true;
-                    break;
-                case 2:
-                    midDown = true;
-                    break;
-                case 3:
-                    rightDown = true;
-                    break;
-            }
-            try {
-                Thread.sleep((int) (Math.random() * 56 + 90));
-            } catch (Exception ex) {
-            }
-            long time = System.currentTimeMillis();
-            robot.mouseRelease(btnMask);
+        Point end = moveMouse(x, y);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        System.out.println("hey");
+        return end;
 
-            switch (button) {
-                case 1:
-                    leftDown = false;
-                    break;
-                case 2:
-                    midDown = false;
-                    break;
-                case 3:
-                    rightDown = false;
-                    break;
-            }
-
-            return end;
-        }
-        return null;
     }
 
     public synchronized boolean isMouseButtonHeld(int button) {

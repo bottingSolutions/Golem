@@ -8,14 +8,16 @@ package solutions.botting.golem;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import solutions.botting.golem.api.Api;
+import net.sourceforge.tess4j.Tesseract;
+import solutions.botting.golem.api.GolemApi;
 import solutions.botting.golem.api.ColorApi;
-import solutions.botting.golem.api.ShapeApi;
+import solutions.botting.golem.api.OCRApi;
+
+import solutions.botting.golem.api.OpenCVApi;
 import solutions.botting.golem.core.RobotHelper;
 import static solutions.botting.golem.script.ScriptState.*;
 
@@ -51,17 +53,18 @@ class ScriptRunner extends Thread implements Runnable {
 
             ScriptEngine engine = factory.getEngineByName("Nashorn");
             engine.put("input", robotHelper);
-
             engine.put("golem", golem);
             engine.put("color", new ColorApi(golem));
-            engine.put("shape", new ShapeApi(golem));
-            engine.put("api", new Api(golem));
+            engine.put("opencv", new OpenCVApi(golem));
+            engine.put("api", new GolemApi(golem));
+            engine.put("ocr", new Tesseract());
+
             if (script != null) {
                 engine.eval(script);
-                return;
+
             } else {
                 engine.eval(new FileReader(scriptFile));
-                return;
+
             }
 
         } catch (FileNotFoundException | ScriptException ex) {

@@ -14,13 +14,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.DefaultTableModel;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.mouse.NativeMouseEvent;
@@ -29,7 +26,6 @@ import solutions.botting.golem.color.ColorPoint;
 import solutions.botting.golem.gui.ColorPickerTableModel;
 import solutions.botting.golem.gui.TextAreaOutputStream;
 import solutions.botting.golem.script.ScriptState;
-import static solutions.botting.golem.script.ScriptState.INTERRUPT;
 import static solutions.botting.golem.script.ScriptState.RUNNING;
 
 /**
@@ -80,11 +76,12 @@ public class GolemFrame extends javax.swing.JFrame implements NativeMouseInputLi
         startScriptButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         outputTextArea = new javax.swing.JTextArea();
-        rTextScrollPane1 = new org.fife.ui.rtextarea.RTextScrollPane();
-        scriptTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
         stopScriptButton = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        rTextScrollPane2 = new org.fife.ui.rtextarea.RTextScrollPane();
+        scriptTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -122,16 +119,6 @@ public class GolemFrame extends javax.swing.JFrame implements NativeMouseInputLi
         outputStream = new PrintStream(new TextAreaOutputStream(outputTextArea));
         jScrollPane3.setViewportView(outputTextArea);
 
-        rTextScrollPane1.setAutoscrolls(true);
-        rTextScrollPane1.setName(""); // NOI18N
-        rTextScrollPane1.setLineNumbersEnabled(true);
-
-        scriptTextArea.setColumns(20);
-        scriptTextArea.setRows(5);
-        scriptTextArea.setCodeFoldingEnabled(true);
-        scriptTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
-        rTextScrollPane1.setViewportView(scriptTextArea);
-
         stopScriptButton.setText("Stop Script");
         stopScriptButton.setEnabled(false);
         stopScriptButton.addActionListener(new java.awt.event.ActionListener() {
@@ -154,11 +141,21 @@ public class GolemFrame extends javax.swing.JFrame implements NativeMouseInputLi
             }
         });
 
+        rTextScrollPane2.setLineNumbersEnabled(true);
+
+        scriptTextArea.setColumns(20);
+        scriptTextArea.setRows(5);
+        scriptTextArea.setSyntaxEditingStyle("text/Javascript");
+        scriptTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
+        rTextScrollPane2.setViewportView(scriptTextArea);
+
+        jScrollPane2.setViewportView(rTextScrollPane2);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(startScriptButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -167,13 +164,13 @@ public class GolemFrame extends javax.swing.JFrame implements NativeMouseInputLi
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addGap(0, 237, Short.MAX_VALUE))
-            .addComponent(rTextScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane2)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startScriptButton)
@@ -287,7 +284,7 @@ public class GolemFrame extends javax.swing.JFrame implements NativeMouseInputLi
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 308, Short.MAX_VALUE))
+                .addGap(0, 355, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -330,7 +327,7 @@ public class GolemFrame extends javax.swing.JFrame implements NativeMouseInputLi
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 113, Short.MAX_VALUE))
+                .addGap(0, 160, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -517,12 +514,13 @@ public class GolemFrame extends javax.swing.JFrame implements NativeMouseInputLi
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea outputTextArea;
     private javax.swing.JButton pickColorButton;
-    private org.fife.ui.rtextarea.RTextScrollPane rTextScrollPane1;
+    private org.fife.ui.rtextarea.RTextScrollPane rTextScrollPane2;
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea scriptTextArea;
     private javax.swing.JButton startScriptButton;
     private javax.swing.JButton stopScriptButton;
